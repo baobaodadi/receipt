@@ -9,4 +9,7 @@ export const UPDATE_DETAIL = 'update_detail';
 export const FETCH_COMPANY = 'fetch_company';
 export const UPDATE_COMPANY = 'update_company';
 
+export const FETCH_STATUS = 'fetch_status';
+export const UPDATE_STATUS = 'update_status';
+
 

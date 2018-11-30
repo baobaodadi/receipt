@@ -236,7 +236,7 @@ class Receipt extends Component {
             <div className="bank">
               <Select
                 style={{width: 220}}
-                placeholder="请选择业务"
+                placeholder="请选择付款公司"
                 value={this.state.company}
                 onChange={this.handleCompanyChange}
                 allowClear={true}
@@ -268,11 +268,12 @@ class Receipt extends Component {
       pageNo:1
     });
     this.props.fetchCompany();
+    this.props.fetchStatus({type:1});
   }
 
   render() {
     const {list} = this.state;
-    const {company} = this.props;
+    const {company,status} = this.props;
 
     return (
       <div className="list">
@@ -308,6 +309,7 @@ const mapStateToProps = state => {
   return ({
     list: state.list.data,
     company: state.company.data,
+    status: state.status.data,
   })
 };
 
@@ -318,6 +320,10 @@ const mapDispatchToProps = dispatch => ({
   }),
   fetchCompany: (payload) => dispatch({
     type: actionTypes.FETCH_COMPANY,
+    payload
+  }),
+  fetchStatus: (payload) => dispatch({
+    type: actionTypes.FETCH_STATUS,
     payload
   })
 });
