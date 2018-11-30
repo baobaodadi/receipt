@@ -27,10 +27,17 @@ import {
 } from 'antd';
 
 const TabPane = Tabs.TabPane;
+const Search = Input.Search;
+
 
 const defaultState = {
   listType: 1,
   company: undefined,
+  invoiceNo: undefined,
+  payNo: undefined,
+  accountingStatus: undefined,
+  companyId: undefined,
+  status: 0
 };
 
 class Receipt extends Component {
@@ -147,6 +154,7 @@ class Receipt extends Component {
     this.handleTableChange = this.handleTableChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleCompanyChange = this.handleCompanyChange.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -162,7 +170,7 @@ class Receipt extends Component {
     });
     this.props.fetchList({
       listType: value,
-      pageNo:1
+      pageNo: 1
     });
   }
 
@@ -182,12 +190,16 @@ class Receipt extends Component {
   handleSearch() {
     this.props.fetchList({
       listType: this.state.listType,
-      pageNo:this.state.pagination.current
+      pageNo: this.state.pagination.current
     });
   }
 
   handleCompanyChange(key) {
-    this.setState({company:key})
+    this.setState({companyId: key})
+  }
+
+  handleStatusChange(key) {
+    this.setState({status: key})
   }
 
   tableList(data) {
@@ -196,7 +208,7 @@ class Receipt extends Component {
         {
           data && data.invoiceList ?
             <Table
-              rowKey='id'
+              rowKey="id"
               className="tableInner"
               align="center"
               dataSource={data.invoiceList}
@@ -227,32 +239,63 @@ class Receipt extends Component {
     )
   }
 
-  searchBar(listType,company) {
+  searchBar(listType, company, status) {
 
     return (
       <div className="list">
-        <div className="find">{
-          company ?
-            <div className="bank">
-              <Select
-                style={{width: 220}}
-                placeholder="请选择付款公司"
-                value={this.state.company}
-                onChange={this.handleCompanyChange}
-                allowClear={true}
-              >
-                {
-                  company && company.map((item, i) =>
-                    <Select.Option key={i} value={item.key}>
-                      {item.value}
-                    </Select.Option>
-                  )
-                }
-              </Select>
-            </div>:null
-        }
+        <div className="find">
+          {
+            company ?
+              <div className="bank">
+                <Select
+                  style={{width: 220}}
+                  placeholder="请选择付款公司"
+                  value={this.state.companyId}
+                  onChange={this.handleCompanyChange}
+                  allowClear={true}
+                >
+                  {
+                    company && company.map((item, i) =>
+                      <Select.Option key={i} value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    )
+                  }
+                </Select>
+              </div> :
+              null
+          }
           <div className="bank">
-
+            {
+              status ?
+                <Select
+                  style={{width: 220}}
+                  placeholder="请选择发票状态"
+                  value={this.state.status}
+                  onChange={this.handleStatusChange}
+                  allowClear={true}
+                >
+                  {
+                    status && status.map((item, i) =>
+                      <Select.Option key={i} value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    )
+                  }
+                </Select>:
+                null
+            }
+          </div>
+          <div className="bank">
+            <Input
+              placeholder="发票号码"
+              onChange={
+                value => {
+                  this.setState({invoiceNo: value})
+                }
+              }
+              // enterButton
+            />
           </div>
           <div className="bank">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
@@ -263,40 +306,40 @@ class Receipt extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchList({
-      listType: 1,
-      pageNo:1
-    });
+    // this.props.fetchList({
+    //   listType: 1,
+    //   pageNo: 1
+    // });
     this.props.fetchCompany();
-    this.props.fetchStatus({type:1});
+    this.props.fetchStatus({type: 1});
   }
 
   render() {
     const {list} = this.state;
-    const {company,status} = this.props;
+    const {company, status} = this.props;
 
     return (
       <div className="list">
 
         <Tabs defaultActiveKey="NOTEBOOK" onChange={this.handleTab}>
           <TabPane tab="我的发票" key="1">
-            {this.searchBar(1,company)}
+            {this.searchBar(1, company, status)}
             {this.tableList(list)}
           </TabPane>
           <TabPane tab="全部发票" key="2">
-            {this.searchBar(2,company)}
+            {this.searchBar(2, company, status)}
             {this.tableList(list)}
           </TabPane>
           <TabPane tab="税务接受" key="3">
-            {this.searchBar(3,company)}
+            {this.searchBar(3, company, status)}
             {this.tableList(list)}
           </TabPane>
           <TabPane tab="发票认证" key="4">
-            {this.searchBar(4,company)}
+            {this.searchBar(4, company, status)}
             {this.tableList(list)}
           </TabPane>
           <TabPane tab="发票记账" key="5">
-            {this.searchBar(5,company)}
+            {this.searchBar(5, company, status)}
             {this.tableList(list)}
           </TabPane>
         </Tabs>
