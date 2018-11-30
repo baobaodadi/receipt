@@ -2,7 +2,6 @@ import queryString from 'query-string';
 import fetch from 'isomorphic-fetch';
 import formData from 'form-urlencoded';
 
-
 function handleResponse(promise, url, method) {
   return promise
     .then(res => {
@@ -13,27 +12,14 @@ function handleResponse(promise, url, method) {
         return res.json();
       }
     })
-    .then(({ status, data, msg, models }) => {
-      if(status===-999){
-        window.location.href=`${data}&targetUrl=${encodeURIComponent(window.location.href)}`;
+    .then(({ code, data, msg,status}) => {
+      if (code === 1) {
+          return data;
       }
-      if(status===-1){
-        window.location.href = `https://oa.sogou-inc.com/asset/api/go-logout?targetUrl=${encodeURIComponent(window.location.href)}`;
+      else {
+        console.log('network error', { status, msg, url, method });
+        throw Object({ status, msg, url, method });
       }
-      if(status===500104){
-        return { status, msg };
-      }
-      return data
-      // if (+code === 0) {
-      //   if (data != null) {
-      //     return data;
-      //   }
-      //
-      //   return models;
-      // } else if (code) {
-      //   console.log('network error', { code, message, url, method });
-      //   throw Object({ code, message, url, method });
-      // }
     });
 }
 
@@ -60,20 +46,14 @@ function formatApiParams(api, params) {
 
 export default {
   get(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     const url = newParams
       ? `${newApi}?${queryString.stringify(newParams)}`
       : newApi;
     return handleResponse(
       fetch(url, {
-        method: 'GET',
         credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-          'If-Modified-Since': 'Thu, 01 Jun 1970 00:00:00 GMT',
-        },
       }),
       url,
       'get'
@@ -81,16 +61,15 @@ export default {
   },
 
   post(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     return handleResponse(
       fetch(newApi, {
         method: 'POST',
         credentials: 'include',
+        mode: 'cors',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded; ' +
-          'charset=utf-8',
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: formData(newParams),
       }),
@@ -100,7 +79,7 @@ export default {
   },
 
   postJson(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     return handleResponse(
       fetch(newApi, {
@@ -118,7 +97,7 @@ export default {
   },
 
   put(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     return handleResponse(
       fetch(newApi, {
@@ -136,7 +115,7 @@ export default {
   },
 
   putJson(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     return handleResponse(
       fetch(newApi, {
@@ -154,7 +133,7 @@ export default {
   },
 
   delete(api, params) {
-    const {newApi, newParams} = formatApiParams(api, params);
+    const { newApi, newParams } = formatApiParams(api, params);
 
     const url = newParams
       ? `${newApi}?${queryString.stringify(newParams)}`
@@ -188,5 +167,10 @@ export default {
       'post'
     );
   },
-}
 
+  genUrl(api, params) {
+    return params ?
+      `${api}?${queryString.stringify(params)}`
+      : api;
+  },
+};

@@ -9,6 +9,6 @@ const inintialState = {
 export default handleActions({
   [actionTypes.UPDATE_COLLAPSED]: (state, { payload }) => ({
     ...state,
-    collapsed: payload,
-  }),
+    ...payload,
+  })
 }, inintialState);

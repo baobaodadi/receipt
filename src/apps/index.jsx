@@ -29,12 +29,12 @@ const store = createStore(
 
 sagaMiddleware.run(rootSaga);
 
-const basename=(window.location.hostname === "oa.sogou-inc.com")?'/asset/admin/':'/';
+// const basename=(window.location.hostname === "oa.sogou-inc.com")?'/asset/admin/':'/';
 
 function renderApp() {
   ReactDOM.render(
     <Provider store={store}>
-      <BrowserRouter basename={basename}>
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </Provider>,

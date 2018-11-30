@@ -5,13 +5,20 @@ import { takeLatest, put } from 'redux-saga/effects';
 import service from '../utils/service';
 import API from '../config/api';
 import * as actionTypes from '../config/actionTypes';
-import { ENTITY_SORT } from '../config/constants';
+import { ENTITY_COMPANY } from '../config/constants';
 
 
-function* fetchSort(action) {
-  const { payload } = action;
+function* fetchCompany() {
+
   try {
-    const data = yield service.get(API[ENTITY_SORT], { ...payload });
+    const data = yield service.get(API[ENTITY_COMPANY]);
+    
+    yield put({
+      type: actionTypes.UPDATE_COMPANY,
+      payload: {
+        data,
+      },
+    });
   }
   catch (e) {
     console.log(e);
@@ -20,6 +27,6 @@ function* fetchSort(action) {
 
 export default function* () {
   yield [
-    takeLatest(actionTypes.FETCH_SORT, fetchSort),
+    takeLatest(actionTypes.FETCH_COMPANY, fetchCompany),
   ];
 }

@@ -3,9 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import Back from './back/index.jsx';
-import Position from './position/index.jsx';
-import Preview from './preview/index.jsx';
+import Receipt from './receipt/index.jsx';
 
 import {
   Route,
@@ -18,10 +16,8 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
-        <Route exact path="/back" component={Back}/>
-        <Route exact path="/position" component={Position}/>
-        <Route exact path="/preview" component={Preview}/>
-        <Redirect from="/" to="back"/>
+        <Route exact path="/receipt" component={Receipt}/>
+        <Redirect from="/" to="receipt"/>
       </Switch>
     );
   }

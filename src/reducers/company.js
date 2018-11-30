@@ -7,7 +7,7 @@ const inintialState = {
 };
 
 export default handleActions({
-  [actionTypes.UPDATE_SUIT]: (state, { payload }) => ({
+  [actionTypes.UPDATE_COMPANY]: (state, { payload }) => ({
     ...state,
     ...payload,
   }),

@@ -11,11 +11,10 @@ import { ENTITY_LIST } from '../config/constants';
 function* fetchList(action) {
   const { payload } = action;
   try {
-    const data = yield service.get(API[ENTITY_LIST], {
-      deviceType: payload.deviceType,
-      suiteId: payload.suiteId,
-      categoryId: payload.categoryId,
+    const data = yield service.postJson(API[ENTITY_LIST], {
+      ...payload
     });
+
 
     yield put({
       type: actionTypes.UPDATE_LIST,

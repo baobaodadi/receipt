@@ -37,8 +37,8 @@ module.exports = function (env) {
       filename: 'js/[name].[hash:7].js',
       path: path.resolve(__dirname, buildPath),
       // will be deployed to '/m/', should be '/' if test in local nginx
-      // publicPath: '/',
-      publicPath: env.online!=='false'?'/asset/admin/':'/',
+      publicPath: '/',
+      // publicPath: env.online!=='false'?'/asset/admin/':'/',
     },
     module: {
       rules: [
