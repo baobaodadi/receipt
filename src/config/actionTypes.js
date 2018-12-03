@@ -12,4 +12,7 @@ export const UPDATE_COMPANY = 'update_company';
 export const FETCH_STATUS = 'fetch_status';
 export const UPDATE_STATUS = 'update_status';
 
+export const FETCH_RECEIVE = 'fetch_receive';
+export const UPDATE_RECEIVE = 'update_receive';
+
 
