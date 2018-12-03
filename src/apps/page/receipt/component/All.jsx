@@ -184,7 +184,7 @@ class All extends Component {
   componentDidMount() {
     this.handleSearch();
     this.props.fetchCompany();
-    this.props.fetchStatus({type: 1});
+    this.props.fetchStatus({type: 2});
   }
 
   render() {

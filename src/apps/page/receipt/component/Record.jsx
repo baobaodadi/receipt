@@ -190,7 +190,7 @@ class Record extends Component {
   componentDidMount() {
     this.handleSearch();
     this.props.fetchCompany();
-    this.props.fetchStatus({type: 1});
+    this.props.fetchStatus({type: 5});
   }
 
   render() {
