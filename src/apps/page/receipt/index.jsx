@@ -32,12 +32,14 @@ const Search = Input.Search;
 
 const defaultState = {
   listType: 1,
-  company: undefined,
   invoiceNo: undefined,
   payNo: undefined,
   accountingStatus: undefined,
-  companyId: undefined,
-  status: 0
+  companyId: 0,
+  status: 0,
+  pagination:{
+    current:1
+  }
 };
 
 class Receipt extends Component {
@@ -168,10 +170,10 @@ class Receipt extends Component {
     this.setState({
       listType: value,
     });
-    this.props.fetchList({
-      listType: value,
-      pageNo: 1
-    });
+    // this.props.fetchList({
+    //   listType: value,
+    //   pageNo: 1,
+    // });
   }
 
   handleTableChange(pagination) {
@@ -183,6 +185,10 @@ class Receipt extends Component {
     this.props.fetchList({
       listType: this.state.listType,
       pageNo: pager.current,
+      invoiceNo:this.state.invoiceNo,
+      payNo:this.state.payNo,
+      companyId:this.state.companyId,
+      status:this.state.status,
     });
   }
 
@@ -190,7 +196,11 @@ class Receipt extends Component {
   handleSearch() {
     this.props.fetchList({
       listType: this.state.listType,
-      pageNo: this.state.pagination.current
+      pageNo: this.state.pagination.current,
+      invoiceNo:this.state.invoiceNo,
+      payNo:this.state.payNo,
+      companyId:this.state.companyId,
+      status:this.state.status,
     });
   }
 
@@ -244,27 +254,28 @@ class Receipt extends Component {
     return (
       <div className="list">
         <div className="find">
-          {
-            company ?
-              <div className="bank">
-                <Select
-                  style={{width: 220}}
-                  placeholder="请选择付款公司"
-                  value={this.state.companyId}
-                  onChange={this.handleCompanyChange}
-                  allowClear={true}
-                >
-                  {
-                    company && company.map((item, i) =>
-                      <Select.Option key={i} value={item.key}>
-                        {item.value}
-                      </Select.Option>
-                    )
-                  }
-                </Select>
-              </div> :
-              null
-          }
+          <div className="bank">
+            <Input
+              placeholder="发票号码"
+              onChange={
+                e => {
+                  this.setState({invoiceNo: e.target.value})
+                }
+              }
+              // enterButton
+            />
+          </div>
+          <div className="bank">
+            <Input
+              placeholder="付款单号"
+              onChange={
+                e => {
+                  this.setState({payNo: e.target.value})
+                }
+              }
+              // enterButton
+            />
+          </div>
           <div className="bank">
             {
               status ?
@@ -286,17 +297,29 @@ class Receipt extends Component {
                 null
             }
           </div>
-          <div className="bank">
-            <Input
-              placeholder="发票号码"
-              onChange={
-                value => {
-                  this.setState({invoiceNo: value})
-                }
-              }
-              // enterButton
-            />
-          </div>
+          {
+            company ?
+              <div className="bank">
+                <Select
+                  style={{width: 220}}
+                  placeholder="请选择付款公司"
+                  value={this.state.companyId}
+                  onChange={this.handleCompanyChange}
+                  allowClear={true}
+                >
+                  {
+                    company && company.map((item, i) =>
+                      <Select.Option key={i} value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    )
+                  }
+                </Select>
+              </div> :
+              null
+          }
+
+
           <div className="bank">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
           </div>
@@ -306,10 +329,6 @@ class Receipt extends Component {
   }
 
   componentDidMount() {
-    // this.props.fetchList({
-    //   listType: 1,
-    //   pageNo: 1
-    // });
     this.props.fetchCompany();
     this.props.fetchStatus({type: 1});
   }
