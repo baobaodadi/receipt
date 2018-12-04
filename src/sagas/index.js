@@ -3,6 +3,8 @@ import list from './list';
 import company from './company';
 import status from './status';
 import receive from './receive';
+import account from './account';
+import confirm from './confirm';
 
 export default function* () {
   yield [
@@ -10,5 +12,7 @@ export default function* () {
     spawn(company),
     spawn(status),
     spawn(receive),
+    spawn(account),
+    spawn(confirm),
   ];
 }

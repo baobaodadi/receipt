@@ -12,6 +12,12 @@ export const UPDATE_COMPANY = 'update_company';
 export const FETCH_STATUS = 'fetch_status';
 export const UPDATE_STATUS = 'update_status';
 
+export const FETCH_ACCOUNT = 'fetch_account';
+export const UPDATE_ACCOUNT = 'update_account';
+
+export const FETCH_CONFIRM = 'fetch_confirm';
+export const UPDATE_CONFIRM = 'update_confirm';
+
 export const FETCH_RECEIVE = 'fetch_receive';
 export const UPDATE_RECEIVE = 'update_receive';
 

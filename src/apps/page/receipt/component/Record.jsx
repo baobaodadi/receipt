@@ -20,7 +20,7 @@ const defaultState = {
   payNo: undefined,
   accountingStatus: undefined,
   companyId: undefined,
-  status: undefined,
+  account: undefined,
   pagination: {
     current: 1
   }
@@ -161,7 +161,7 @@ class Record extends Component {
       invoiceNo: this.state.invoiceNo,
       payNo: this.state.payNo,
       companyId: this.state.companyId,
-      status: this.state.status,
+      account: this.state.account,
     });
 
   }
@@ -174,7 +174,7 @@ class Record extends Component {
       invoiceNo: this.state.invoiceNo,
       payNo: this.state.payNo,
       companyId: this.state.companyId,
-      status: this.state.status,
+      account: this.state.account,
     });
   }
 
@@ -183,19 +183,18 @@ class Record extends Component {
   }
 
   handleStatusChange(key) {
-    this.setState({status: key})
+    this.setState({account: key})
   }
-
 
   componentDidMount() {
     this.handleSearch();
     this.props.fetchCompany();
-    this.props.fetchStatus({type: 5});
+    this.props.fetchAccount();
   }
 
   render() {
     const {list} = this.state;
-    const {status,company}=this.props;
+    const {account,company}=this.props;
 
     return (
       <div className="content">
@@ -228,13 +227,13 @@ class Record extends Component {
           <div className="bank">
             <Select
               style={{width: 150}}
-              placeholder="请选择发票状态"
-              value={this.state.status}
+              placeholder="请选择记账状态"
+              value={this.state.account}
               onChange={this.handleStatusChange}
               allowClear={true}
             >
               {
-                status && status.map((item, i) =>
+                account && account.map((item, i) =>
                   <Select.Option key={i} value={item.key}>
                     {item.value}
                   </Select.Option>
@@ -305,7 +304,7 @@ const mapStateToProps = state => {
   return ({
     list: state.list.data,
     company: state.company.data,
-    status: state.status.data,
+    account: state.account.data,
   })
 };
 
@@ -318,8 +317,8 @@ const mapDispatchToProps = dispatch => ({
     type: actionTypes.FETCH_COMPANY,
     payload
   }),
-  fetchStatus: (payload) => dispatch({
-    type: actionTypes.FETCH_STATUS,
+  fetchAccount: (payload) => dispatch({
+    type: actionTypes.FETCH_ACCOUNT,
     payload
   })
 });

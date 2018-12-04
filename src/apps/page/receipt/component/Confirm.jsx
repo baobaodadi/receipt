@@ -20,7 +20,7 @@ const defaultState = {
   payNo: undefined,
   accountingStatus: undefined,
   companyId: undefined,
-  status: undefined,
+  status: 4,
   pagination: {
     current: 1
   }
@@ -139,6 +139,8 @@ class Confirm extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleCompanyChange = this.handleCompanyChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -172,6 +174,15 @@ class Confirm extends Component {
     });
   }
 
+  handleConfirm() {
+    this.props.fetchConfirm({
+      invoiceIds: this.state.selectedRowKeys.toString()
+    });
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
+  }
+
   handleCompanyChange(key) {
     this.setState({companyId: key})
   }
@@ -187,9 +198,18 @@ class Confirm extends Component {
     this.props.fetchStatus({type: 4});
   }
 
+  onSelectChange (selectedRowKeys){
+    this.setState({ selectedRowKeys });
+  }
+
+
   render() {
-    const {list} = this.state;
+    const {list,selectedRowKeys} = this.state;
     const {status,company}=this.props;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
 
     return (
       <div className="content">
@@ -256,17 +276,20 @@ class Confirm extends Component {
           <div className="bank">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
           </div>
+          <div className="bank">
+            <Button type="primary" onClick={this.handleConfirm}>认证</Button>
+          </div>
         </div>
         <div className="tablelist">
           {
             list && list.invoiceList ?
               <Table
-
                 rowKey="id"
                 className="tableInner"
                 align="center"
                 dataSource={list.invoiceList}
                 columns={this.columns()}
+                rowSelection={rowSelection}
                 bordered
                 // scroll={{y: 640}}
                 // scroll={{x: 2080}}
@@ -314,6 +337,10 @@ const mapDispatchToProps = dispatch => ({
   }),
   fetchStatus: (payload) => dispatch({
     type: actionTypes.FETCH_STATUS,
+    payload
+  }),
+  fetchConfirm: (payload) => dispatch({
+    type: actionTypes.FETCH_CONFIRM,
     payload
   })
 });

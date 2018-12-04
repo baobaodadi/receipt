@@ -20,7 +20,7 @@ const defaultState = {
   payNo: undefined,
   accountingStatus: undefined,
   companyId: undefined,
-  status: undefined,
+  status: 3,
   pagination: {
     current: 1
   }
@@ -178,7 +178,9 @@ class Accept extends Component {
     this.props.fetchReceive({
       invoiceIds: this.state.selectedRowKeys.toString()
     });
-    this.handleSearch();
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
   }
 
 
