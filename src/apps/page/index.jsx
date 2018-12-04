@@ -11,6 +11,7 @@ import SiderMenu from '../component/SiderMenu/index'
 import Routes from './routes'
 import {withRouter} from 'react-router-dom';
 import * as actionTypes from "../../config/actionTypes";
+import './index.less';
 
 
 let isMobile;
@@ -54,33 +55,33 @@ class Main extends Component {
             <div className="main-wrapper">
                 <div className="main-container">
                 <Row>
-                    {/*{isMobile ? (*/}
-                        {/*<DrawerMenu*/}
-                            {/*open={!this.props.collapsed}*/}
-                            {/*onMaskClick={() => {*/}
-                                {/*this.onCollapse(true);*/}
-                            {/*}}*/}
-                            {/*onIconClick={() => {*/}
-                                {/*this.onCollapse(!this.props.collapsed);*/}
-                            {/*}}*/}
-                            {/*width="200px"*/}
-                        {/*>*/}
-                            {/*<SiderMenu*/}
-                                {/*location={history.location}*/}
-                                {/*onCollapse={this.onCollapse}*/}
-                            {/*/>*/}
-                        {/*</DrawerMenu>) : (*/}
-                        {/*<Col span={3} className="main-menu">*/}
-                            {/*<SiderMenu*/}
-                                {/*location={history.location}*/}
-                                {/*onCollapse={this.onCollapse}*/}
-                            {/*/>*/}
-                        {/*</Col>*/}
-                    {/*)*/}
-                    {/*}*/}
-                    {/*<Col span={21} className="main-container">*/}
+                    {isMobile ? (
+                        <DrawerMenu
+                            open={!this.props.collapsed}
+                            onMaskClick={() => {
+                                this.onCollapse(true);
+                            }}
+                            onIconClick={() => {
+                                this.onCollapse(!this.props.collapsed);
+                            }}
+                            // width="100px"
+                        >
+                            <SiderMenu
+                                location={history.location}
+                                onCollapse={this.onCollapse}
+                            />
+                        </DrawerMenu>) : (
+                        <Col span={1} className="main-menu">
+                            <SiderMenu
+                                location={history.location}
+                                onCollapse={this.onCollapse}
+                            />
+                        </Col>
+                    )
+                    }
+                    <Col span={23} className="main-container">
                         <Routes />
-                    {/*</Col>*/}
+                    </Col>
                 </Row>
                 </div>
             </div>

@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
-import * as actionTypes from "../../../../config/actionTypes";
+import * as actionTypes from "../../../config/actionTypes";
 import {connect} from "react-redux";
 import 'moment/locale/zh-cn'
 import {
@@ -192,7 +192,7 @@ class All extends Component {
     const {status,company}=this.props;
 
     return (
-      <div className="content">
+      <div className="list">
         <div className="find">
           <div className="bank">
             <Input

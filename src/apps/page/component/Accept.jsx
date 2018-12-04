@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
-import * as actionTypes from "../../../../config/actionTypes";
+import * as actionTypes from "../../../config/actionTypes";
 import {connect} from "react-redux";
 import 'moment/locale/zh-cn'
 import {
@@ -20,13 +20,13 @@ const defaultState = {
   payNo: undefined,
   accountingStatus: undefined,
   companyId: undefined,
-  account: undefined,
+  status: 3,
   pagination: {
     current: 1
   }
 };
 
-class Record extends Component {
+class Accept extends Component {
 
   columns() {
     let array = [
@@ -139,6 +139,8 @@ class Record extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleCompanyChange = this.handleCompanyChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
+    this.handleAccept = this.handleAccept.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -154,14 +156,8 @@ class Record extends Component {
     pager.current = pagination.current;
     this.setState({
       pagination: pager,
-    });
-    this.props.fetchList({
-      listType: 5,
-      pageNo: pager.current,
-      invoiceNo: this.state.invoiceNo,
-      payNo: this.state.payNo,
-      companyId: this.state.companyId,
-      account: this.state.account,
+    },()=>{
+      this.handleSearch();
     });
 
   }
@@ -169,35 +165,54 @@ class Record extends Component {
 
   handleSearch() {
     this.props.fetchList({
-      listType: 5,
+      listType: 3,
       pageNo: this.state.pagination.current,
       invoiceNo: this.state.invoiceNo,
       payNo: this.state.payNo,
       companyId: this.state.companyId,
-      account: this.state.account,
+      status: this.state.status,
     });
   }
+
+  handleAccept() {
+    this.props.fetchReceive({
+      invoiceIds: this.state.selectedRowKeys.toString()
+    });
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
+  }
+
 
   handleCompanyChange(key) {
     this.setState({companyId: key})
   }
 
   handleStatusChange(key) {
-    this.setState({account: key})
+    this.setState({status: key})
   }
+
 
   componentDidMount() {
     this.handleSearch();
     this.props.fetchCompany();
-    this.props.fetchAccount();
+    this.props.fetchStatus({type: 3});
+  }
+
+  onSelectChange (selectedRowKeys){
+    this.setState({ selectedRowKeys });
   }
 
   render() {
-    const {list} = this.state;
-    const {account,company}=this.props;
+    const {list,selectedRowKeys} = this.state;
+    const {status,company}=this.props;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
 
     return (
-      <div className="content">
+      <div className="list">
         <div className="find">
           <div className="bank">
             <Input
@@ -227,13 +242,13 @@ class Record extends Component {
           <div className="bank">
             <Select
               style={{width: 150}}
-              placeholder="请选择记账状态"
-              value={this.state.account}
+              placeholder="请选择发票状态"
+              value={this.state.status}
               onChange={this.handleStatusChange}
               allowClear={true}
             >
               {
-                account && account.map((item, i) =>
+                status && status.map((item, i) =>
                   <Select.Option key={i} value={item.key}>
                     {item.value}
                   </Select.Option>
@@ -261,16 +276,19 @@ class Record extends Component {
           <div className="bank">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
           </div>
+          <div className="bank">
+            <Button type="primary" onClick={this.handleAccept}>接收</Button>
+          </div>
         </div>
         <div className="tablelist">
           {
             list && list.invoiceList ?
               <Table
-
                 rowKey="id"
                 className="tableInner"
                 align="center"
                 dataSource={list.invoiceList}
+                rowSelection={rowSelection}
                 columns={this.columns()}
                 bordered
                 // scroll={{y: 640}}
@@ -304,7 +322,7 @@ const mapStateToProps = state => {
   return ({
     list: state.list.data,
     company: state.company.data,
-    account: state.account.data,
+    status: state.status.data,
   })
 };
 
@@ -317,13 +335,17 @@ const mapDispatchToProps = dispatch => ({
     type: actionTypes.FETCH_COMPANY,
     payload
   }),
-  fetchAccount: (payload) => dispatch({
-    type: actionTypes.FETCH_ACCOUNT,
+  fetchStatus: (payload) => dispatch({
+    type: actionTypes.FETCH_STATUS,
+    payload
+  }),
+  fetchReceive: (payload) => dispatch({
+    type: actionTypes.FETCH_RECEIVE,
     payload
   })
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Record));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Accept));
 
 
 

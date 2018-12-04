@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
-import * as actionTypes from "../../../../config/actionTypes";
+import * as actionTypes from "../../../config/actionTypes";
 import {connect} from "react-redux";
 import 'moment/locale/zh-cn'
 import {
@@ -20,13 +20,13 @@ const defaultState = {
   payNo: undefined,
   accountingStatus: undefined,
   companyId: undefined,
-  status: undefined,
+  status: 4,
   pagination: {
     current: 1
   }
 };
 
-class My extends Component {
+class Confirm extends Component {
 
   columns() {
     let array = [
@@ -139,6 +139,8 @@ class My extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleCompanyChange = this.handleCompanyChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -163,13 +165,22 @@ class My extends Component {
 
   handleSearch() {
     this.props.fetchList({
-      listType: 1,
+      listType: 4,
       pageNo: this.state.pagination.current,
       invoiceNo: this.state.invoiceNo,
       payNo: this.state.payNo,
       companyId: this.state.companyId,
       status: this.state.status,
     });
+  }
+
+  handleConfirm() {
+    this.props.fetchConfirm({
+      invoiceIds: this.state.selectedRowKeys.toString()
+    });
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
   }
 
   handleCompanyChange(key) {
@@ -184,15 +195,24 @@ class My extends Component {
   componentDidMount() {
     this.handleSearch();
     this.props.fetchCompany();
-    this.props.fetchStatus({type: 1});
+    this.props.fetchStatus({type: 4});
   }
 
+  onSelectChange (selectedRowKeys){
+    this.setState({ selectedRowKeys });
+  }
+
+
   render() {
-    const {list} = this.state;
+    const {list,selectedRowKeys} = this.state;
     const {status,company}=this.props;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
 
     return (
-      <div className="content">
+      <div className="list">
         <div className="find">
           <div className="bank">
             <Input
@@ -256,6 +276,9 @@ class My extends Component {
           <div className="bank">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
           </div>
+          <div className="bank">
+            <Button type="primary" onClick={this.handleConfirm}>认证</Button>
+          </div>
         </div>
         <div className="tablelist">
           {
@@ -266,6 +289,7 @@ class My extends Component {
                 align="center"
                 dataSource={list.invoiceList}
                 columns={this.columns()}
+                rowSelection={rowSelection}
                 bordered
                 // scroll={{y: 640}}
                 // scroll={{x: 2080}}
@@ -314,10 +338,14 @@ const mapDispatchToProps = dispatch => ({
   fetchStatus: (payload) => dispatch({
     type: actionTypes.FETCH_STATUS,
     payload
+  }),
+  fetchConfirm: (payload) => dispatch({
+    type: actionTypes.FETCH_CONFIRM,
+    payload
   })
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(My));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Confirm));
 
 
 
