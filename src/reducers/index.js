@@ -6,6 +6,7 @@ import status from './status';
 import receive from './receive';
 import account from './account';
 import confirm from './confirm';
+import record from './record';
 
 export default combineReducers({
   list,
@@ -15,4 +16,5 @@ export default combineReducers({
   receive,
   account,
   confirm,
+  record,
 });

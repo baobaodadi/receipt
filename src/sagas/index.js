@@ -5,6 +5,7 @@ import status from './status';
 import receive from './receive';
 import account from './account';
 import confirm from './confirm';
+import record from './record';
 
 export default function* () {
   yield [
@@ -14,5 +15,6 @@ export default function* () {
     spawn(receive),
     spawn(account),
     spawn(confirm),
+    spawn(record),
   ];
 }

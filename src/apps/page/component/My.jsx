@@ -18,6 +18,7 @@ import {
 const defaultState = {
   invoiceNo: undefined,
   payNo: undefined,
+  operator: undefined,
   accountingStatus: undefined,
   companyId: undefined,
   status: undefined,
@@ -30,13 +31,6 @@ class My extends Component {
 
   columns() {
     let array = [
-      {
-        title: '开票日期',
-        dataIndex: 'invoiceDate',
-        key: 'invoiceDate',
-        width: 100,
-        align: 'center',
-      },
       {
         title: '付款公司',
         dataIndex: 'copanyName',
@@ -59,7 +53,14 @@ class My extends Component {
         align: 'center',
       },
       {
-        title: '发票税额',
+        title: '开票日期',
+        dataIndex: 'invoiceDate',
+        key: 'invoiceDate',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '税额',
         dataIndex: 'taxAmount',
         key: 'taxAmount',
         width: 100,
@@ -87,7 +88,7 @@ class My extends Component {
         align: 'center',
       },
       {
-        title: '认证状态',
+        title: '发票状态',
         dataIndex: 'status',
         key: 'status',
         width: 100,
@@ -101,9 +102,37 @@ class My extends Component {
         align: 'center',
       },
       {
-        title: '申请时间',
+        title: '申请日期',
         dataIndex: 'applTime',
         key: 'applTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '接收日期',
+        dataIndex: 'taxReceiptTime',
+        key: 'taxReceiptTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '完结日期',
+        dataIndex: 'accountingTime',
+        key: 'accountingTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '财务初审',
+        dataIndex: 'reviewUser',
+        key: 'reviewUser',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '认证结果',
+        dataIndex: 'legalizeState',
+        key: 'legalizeState',
         width: 100,
         align: 'center',
       },
@@ -113,16 +142,8 @@ class My extends Component {
         key: 'accountingStatus',
         width: 100,
         align: 'center',
-      },
-      {
-        title: '财务审核人',
-        dataIndex: 'reviewUser',
-        key: 'reviewUser',
-        width: 100,
-        align: 'center',
-      },
-      {
-        title: '记账人',
+      },{
+        title: '记账会计',
         dataIndex: 'accountingUser',
         key: 'accountingUser',
         width: 100,
@@ -167,6 +188,7 @@ class My extends Component {
       pageNo: this.state.pagination.current,
       invoiceNo: this.state.invoiceNo,
       payNo: this.state.payNo,
+      operator: this.state.operator,
       companyId: this.state.companyId,
       status: this.state.status,
     });
@@ -194,11 +216,11 @@ class My extends Component {
     return (
       <div className="list">
         <div className="find">
-          <div className="bank">
+          <div className="item">
             <Input
-              style={{width: 100}}
+              style={{width: 130}}
               value={this.state.invoiceNo}
-              placeholder="发票号码"
+              placeholder="请输入发票号码"
               onChange={
                 e => {
                   this.setState({invoiceNo: e.target.value})
@@ -207,10 +229,10 @@ class My extends Component {
               // enterButton
             />
           </div>
-          <div className="bank">
+          <div className="item">
             <Input
               style={{width: 180}}
-              placeholder="付款单号"
+              placeholder="请输入付款单号"
               onChange={
                 e => {
                   this.setState({payNo: e.target.value})
@@ -219,7 +241,7 @@ class My extends Component {
               // enterButton
             />
           </div>
-          <div className="bank">
+          <div className="item">
             <Select
               style={{width: 150}}
               placeholder="请选择发票状态"
@@ -236,7 +258,7 @@ class My extends Component {
               }
             </Select>
           </div>
-          <div className="bank">
+          <div className="item">
             <Select
               style={{width: 220}}
               placeholder="请选择付款公司"
@@ -253,7 +275,19 @@ class My extends Component {
               }
             </Select>
           </div>
-          <div className="bank">
+          <div className="item">
+            <Input
+              style={{width: 130}}
+              placeholder="请输入财务初审"
+              onChange={
+                e => {
+                  this.setState({operator: e.target.value})
+                }
+              }
+              // enterButton
+            />
+          </div>
+          <div className="item">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
           </div>
         </div>

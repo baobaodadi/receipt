@@ -6,4 +6,4 @@ export const ENTITY_CONFIRM = 'entity_confirm';
 export const ENTITY_COMPANY = 'entity_company';
 export const ENTITY_STATUS = 'entity_status';
 export const ENTITY_ACCOUNT = 'entity_account';
-export const ENTITY_BOOKKEEP = 'entity_bookeep';
+export const ENTITY_RECORD = 'entity_record';

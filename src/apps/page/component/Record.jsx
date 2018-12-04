@@ -9,7 +9,7 @@ import {connect} from "react-redux";
 import 'moment/locale/zh-cn'
 import {
   Table,
-  Input,
+  message,
   Button,
   Select,
 } from 'antd';
@@ -30,13 +30,6 @@ class Record extends Component {
 
   columns() {
     let array = [
-      {
-        title: '开票日期',
-        dataIndex: 'invoiceDate',
-        key: 'invoiceDate',
-        width: 100,
-        align: 'center',
-      },
       {
         title: '付款公司',
         dataIndex: 'copanyName',
@@ -59,7 +52,14 @@ class Record extends Component {
         align: 'center',
       },
       {
-        title: '发票税额',
+        title: '开票日期',
+        dataIndex: 'invoiceDate',
+        key: 'invoiceDate',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '税额',
         dataIndex: 'taxAmount',
         key: 'taxAmount',
         width: 100,
@@ -87,7 +87,7 @@ class Record extends Component {
         align: 'center',
       },
       {
-        title: '认证状态',
+        title: '发票状态',
         dataIndex: 'status',
         key: 'status',
         width: 100,
@@ -101,9 +101,37 @@ class Record extends Component {
         align: 'center',
       },
       {
-        title: '申请时间',
+        title: '申请日期',
         dataIndex: 'applTime',
         key: 'applTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '接收日期',
+        dataIndex: 'taxReceiptTime',
+        key: 'taxReceiptTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '完结日期',
+        dataIndex: 'accountingTime',
+        key: 'accountingTime',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '财务初审',
+        dataIndex: 'reviewUser',
+        key: 'reviewUser',
+        width: 100,
+        align: 'center',
+      },
+      {
+        title: '认证结果',
+        dataIndex: 'legalizeState',
+        key: 'legalizeState',
         width: 100,
         align: 'center',
       },
@@ -113,16 +141,8 @@ class Record extends Component {
         key: 'accountingStatus',
         width: 100,
         align: 'center',
-      },
-      {
-        title: '财务审核人',
-        dataIndex: 'reviewUser',
-        key: 'reviewUser',
-        width: 100,
-        align: 'center',
-      },
-      {
-        title: '记账人',
+      },{
+        title: '记账会计',
         dataIndex: 'accountingUser',
         key: 'accountingUser',
         width: 100,
@@ -137,6 +157,9 @@ class Record extends Component {
     this.state = {...defaultState};
     this.handleTableChange = this.handleTableChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleTest = this.handleTest.bind(this);
+    this.handleAuto = this.handleAuto.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
     this.handleCompanyChange = this.handleCompanyChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
   }
@@ -178,12 +201,48 @@ class Record extends Component {
     });
   }
 
+  handleTest() {
+    if(!this.state.selectedRowKeys){
+      return message.error('请先选择发票')
+    }
+    this.props.fetchRecord({
+      invoiceIds: this.state.selectedRowKeys.toString(),
+      type:1
+    });
+    this.setState({
+      selectedRowKeys: [],
+    });
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
+  }
+
+  handleAuto() {
+    if(!this.state.selectedRowKeys){
+      return message.error('请先选择发票')
+    }
+    this.props.fetchRecord({
+      invoiceIds: this.state.selectedRowKeys.toString(),
+      type:2
+    });
+    this.setState({
+      selectedRowKeys: [],
+    });
+    setTimeout(()=>{
+      this.handleSearch();
+    },200)
+  }
+
   handleCompanyChange(key) {
     this.setState({companyId: key})
   }
 
   handleStatusChange(key) {
     this.setState({account: key})
+  }
+
+  onSelectChange (selectedRowKeys){
+    this.setState({ selectedRowKeys });
   }
   
   componentDidMount() {
@@ -193,38 +252,42 @@ class Record extends Component {
   }
 
   render() {
-    const {list} = this.state;
+    const {list,selectedRowKeys} = this.state;
     const {account,company}=this.props;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
 
     return (
       <div className="list">
         <div className="find">
-          <div className="bank">
-            <Input
-              style={{width: 100}}
-              value={this.state.invoiceNo}
-              placeholder="发票号码"
-              onChange={
-                e => {
-                  this.setState({invoiceNo: e.target.value})
-                }
-              }
-              // enterButton
-            />
-          </div>
-          <div className="bank">
-            <Input
-              style={{width: 180}}
-              placeholder="付款单号"
-              onChange={
-                e => {
-                  this.setState({payNo: e.target.value})
-                }
-              }
-              // enterButton
-            />
-          </div>
-          <div className="bank">
+          {/*<div className="item">*/}
+            {/*<Input*/}
+              {/*style={{width: 100}}*/}
+              {/*value={this.state.invoiceNo}*/}
+              {/*placeholder="发票号码"*/}
+              {/*onChange={*/}
+                {/*e => {*/}
+                  {/*this.setState({invoiceNo: e.target.value})*/}
+                {/*}*/}
+              {/*}*/}
+              {/*// enterButton*/}
+            {/*/>*/}
+          {/*</div>*/}
+          {/*<div className="item">*/}
+            {/*<Input*/}
+              {/*style={{width: 180}}*/}
+              {/*placeholder="付款单号"*/}
+              {/*onChange={*/}
+                {/*e => {*/}
+                  {/*this.setState({payNo: e.target.value})*/}
+                {/*}*/}
+              {/*}*/}
+              {/*// enterButton*/}
+            {/*/>*/}
+          {/*</div>*/}
+          <div className="item">
             <Select
               style={{width: 150}}
               placeholder="请选择记账状态"
@@ -241,7 +304,7 @@ class Record extends Component {
               }
             </Select>
           </div>
-          <div className="bank">
+          <div className="item">
             <Select
               style={{width: 220}}
               placeholder="请选择付款公司"
@@ -258,19 +321,25 @@ class Record extends Component {
               }
             </Select>
           </div>
-          <div className="bank">
+          <div className="item">
             <Button type="primary" onClick={this.handleSearch}>查询</Button>
+          </div>
+          <div className="item">
+            <Button type="primary" onClick={this.handleTest}>记账测试</Button>
+          </div>
+          <div className="item">
+            <Button type="primary" onClick={this.handleAuto}>自动记账</Button>
           </div>
         </div>
         <div className="tablelist">
           {
             list && list.invoiceList ?
               <Table
-
                 rowKey="id"
                 className="tableInner"
                 align="center"
                 dataSource={list.invoiceList}
+                rowSelection={rowSelection}
                 columns={this.columns()}
                 bordered
                 // scroll={{y: 640}}
@@ -319,6 +388,10 @@ const mapDispatchToProps = dispatch => ({
   }),
   fetchAccount: (payload) => dispatch({
     type: actionTypes.FETCH_ACCOUNT,
+    payload
+  }),
+  fetchRecord: (payload) => dispatch({
+    type: actionTypes.FETCH_RECORD,
     payload
   })
 });

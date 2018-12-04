@@ -18,6 +18,9 @@ export const UPDATE_ACCOUNT = 'update_account';
 export const FETCH_CONFIRM = 'fetch_confirm';
 export const UPDATE_CONFIRM = 'update_confirm';
 
+export const FETCH_RECORD = 'fetch_record';
+export const UPDATE_RECORD = 'update_record';
+
 export const FETCH_RECEIVE = 'fetch_receive';
 export const UPDATE_RECEIVE = 'update_receive';
 
